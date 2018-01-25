@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  web:
+    build: .
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    command: nodemon http.js
+    links:
+      - mysql
+
+  migrate:
+    build: .
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: node sphinx migration-up
+
+  seed:
+    build: .
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: node sphinx seeder-run
+
+  mysql:
+    image: "mysql:5.5"
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=true
+      - MYSQL_USER=positioning
+      - MYSQL_PASSWORD=positioning
+      - MYSQL_DATABASE=positioning
