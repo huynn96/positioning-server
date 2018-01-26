@@ -12,20 +12,6 @@ services:
     links:
       - mysql
 
-  migrate:
-    build: .
-    volumes:
-      - .:/app
-      - /app/node_modules
-    command: node sphinx migration-up
-
-  seed:
-    build: .
-    volumes:
-      - .:/app
-      - /app/node_modules
-    command: node sphinx seeder-run
-
   mysql:
     image: "mysql:5.5"
     ports:

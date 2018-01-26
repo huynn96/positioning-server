@@ -12,6 +12,9 @@
             <div class="row">
                 <div class="col-md-11 col-sm-12">
                     <p class="text-muted"><em>{{quote.content}}</em> <small style="white-space: nowrap;word-break: keep-all;">&mdash;{{quote.author}}</small></p>
+                    {% for room in rooms %}
+                    <p>{{ room.roomName }}</p>
+                    {% endfor %}
                 </div>
                 <div class="col-md-1 col-sm-12">
                     <a href="{{url.route('user', {user: 'You'})}}" class="btn btn-primary btn-block"><i class="glyphicon glyphicon-chevron-right"></i></a>

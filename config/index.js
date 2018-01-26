@@ -31,7 +31,8 @@ module.exports = {
 
         // Application providers
         // add more providers to extend the application functionality
-        require('app/app.provider')
+        require('app/app.provider'),
+        require('positioning/room/room.provider')
     ],
 
     injects: [
