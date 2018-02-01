@@ -5,6 +5,7 @@ require('app-module-path')
 const config    = require('config/index');
 const bootstrap = require('bootstrap/index');
 const Container = require('@sphinx-software/container');
+const koaBody   = require('koa-body');
 const EventEmitter = require('events').EventEmitter;
 
 (async () => {
@@ -13,6 +14,9 @@ const EventEmitter = require('events').EventEmitter;
     let router     = await container.make('http.router');
     
     httpKernel
+		.use(koaBody({
+			urlencoded: true
+		}))
         .use(router.routes())
         .use(router.allowedMethods())
     ;

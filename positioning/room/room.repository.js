@@ -14,6 +14,10 @@ class RoomRepository {
 		return rooms.map(room => new Room(room['room_name'], room['address']));
 	}
 	
+	async postWifiInfo() {
+	
+	}
+	
 }
 
 module.exports = RoomRepository;

@@ -32,13 +32,15 @@ module.exports = {
         // Application providers
         // add more providers to extend the application functionality
         require('app/app.provider'),
-        require('positioning/room/room.provider')
+        require('positioning/room/room.provider'),
+		require('positioning/wifi/wifi.provider')
     ],
 
     injects: [
         // Injects dependencies by its metadata here
-        require('app/http/welcome.controller'),
-        require('app/command/quotes.command')
+        require('app/http/controller/welcome.controller'),
+        require('app/command/quotes.command'),
+        require('app/http/controller/fingerprinter.controller')
     ],
 
     // Services related configuration
