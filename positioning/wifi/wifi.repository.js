@@ -3,29 +3,34 @@ class WifiRepository {
 		this.database = database;
 	}
 	
-	async addWifiInfo(wifiInfoObject) {
+	async addWifiInfo(positionInfo, wifiInfos) {
 		let referencePoint   = await this.database('reference_point_info').select()
-			.where('room_id', wifiInfoObject.room_id)
-			.andWhere('x', wifiInfoObject.x)
-			.andWhere('y', wifiInfoObject.y)
+			.where('room_id', positionInfo.roomId)
+			.andWhere('x', positionInfo.x)
+			.andWhere('y', positionInfo.y)
 		;
-		
+
 		let referencePointId = referencePoint.length ? referencePoint[0]['id'] : 1;
 		if (!referencePoint.length) {
 			referencePointId = await this.database('reference_point_info').insert({
-				room_id: wifiInfoObject.room_id,
-				x      : wifiInfoObject.x,
-				y      : wifiInfoObject.y
+				room_id: positionInfo.roomId,
+				x      : positionInfo.x,
+				y      : positionInfo.y
 			});
 			referencePointId = referencePointId[0];
 		}
-		
-		return await this.database('fingerprint_info').insert({
-			reference_point_id: referencePointId,
-			ap_name           : wifiInfoObject.ap_name,
-			mac_address       : wifiInfoObject.mac_address,
-			rss               : wifiInfoObject.rss
-		});
+		let rows = wifiInfos.reduce((rows, wifiInfo) => {
+			return rows.concat(wifiInfo.listRss.map(rss => {
+				return {
+					reference_point_id: referencePointId,
+					mac_address: wifiInfo.macAddress,
+					ap_name: wifiInfo.apName,
+					rss: rss
+				}
+			}));
+		}, []);
+		await this.database('fingerprint_info').insert(rows);
+		return referencePointId;
 	}
 	
 }

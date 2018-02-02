@@ -4,6 +4,7 @@ exports.up = async database => {
 		table.increments('id');
 		table.integer('reference_point_id');
 		table.string('mac_address');
+		table.string('ap_name');
 		table.double('mean');
 		table.double('variance');
 	});

@@ -16,15 +16,23 @@ module.exports = {
     },
     
     getRooms: {
-		url: '/rooms',
+		url: '/api/mobile/rooms',
 		method: 'get',
 		handlers: [
 			'FingerprinterController.getRooms'
 		]
     },
 	
+	getBuildings: {
+		url: '/api/mobile/buildings',
+		method: 'get',
+		handlers: [
+			'FingerprinterController.getBuildings'
+		]
+	},
+	
 	addWifiInfo: {
-		url: '/add-wifi-info',
+		url: '/api/mobile/add-wifi-info',
 		method: 'post',
 		handlers: [
 			require('app/http/middlewares/wifi.middleware'),
@@ -33,7 +41,7 @@ module.exports = {
 	},
 	
 	localization: {
-		url: '/localization',
+		url: '/api/mobile/localization',
 		method: 'post',
 		handlers: [
 			require('app/http/middlewares/localization.middleware'),
