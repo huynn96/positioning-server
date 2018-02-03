@@ -7,14 +7,19 @@ class Localization {
 	
 	async positioning(wifiInfos, positionInfo) {
 		let referencePoints = await this.database('reference_point_info').select().where('room_id', positionInfo.roomId);
-		let gaussianInfos = await this.database('gaussian_fingerprint_info').select();
+		let gaussianInfos = await this.database('gaussian_fingerprint_info').select()
+			.where('reference_point_id', 'in', referencePoints.map(referencePoint => referencePoint.id))
+		;
 		return referencePoints.map(referencePoint => {
 			let pWifi = wifiInfos.map(wifiInfo => {
 				let gaussInfo = gaussianInfos.find(gaussianInfo => {
 					return (gaussianInfo.reference_point_id === referencePoint.id) && (gaussianInfo.mac_address === wifiInfo.macAddress);
 				});
-				let distribution = Gaussian(gaussInfo.mean, gaussInfo.variance);
-				return distribution.pdf(wifiInfo.rss);
+				if (gaussInfo && gaussInfo.variance > 0) {
+					let distribution = Gaussian(gaussInfo.mean, gaussInfo.variance);
+					return distribution.pdf(wifiInfo.rss);
+				}
+				return 0.000001;
 			});
 			return {
 				id: referencePoint.id,

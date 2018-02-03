@@ -51,7 +51,10 @@ class FingerprinterController {
 	async positioning(context) {
 		console.log("request localization api");
 		let p = await this.localization.positioning(context.wifiInfos, context.positionInfo);
-		console.log(p);
+		let max = p.reduce(function(max, current) {
+			return (max.probability > current.probability) ? max : current
+		}, -1);
+		console.log(max);
 	}
 }
 
