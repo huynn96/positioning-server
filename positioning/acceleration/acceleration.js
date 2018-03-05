@@ -14,8 +14,8 @@ class Acceleration {
 			x: this.x,
 			y: this.y,
 			z: this.z,
-			label: TYPE_ACTIVITY[this.label],
-			created_at: this.createdAt
+			label: this.label,
+            created_at: this.createdAt
 		}
 	}
 

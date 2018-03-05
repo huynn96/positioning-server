@@ -47,5 +47,14 @@ module.exports = {
 			require('app/http/middlewares/localization.middleware'),
 			'FingerprinterController.positioning'
 		]
+	},
+	
+	storeMotionInfo: {
+        url: '/api/mobile/motion-info',
+        method: 'post',
+        handlers: [
+            require('app/http/middlewares/motion.middleware'),
+            'FingerprinterController.storeMotionInfo'
+        ]
 	}
 };

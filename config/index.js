@@ -33,7 +33,8 @@ module.exports = {
         // add more providers to extend the application functionality
         require('app/app.provider'),
         require('positioning/room/room.provider'),
-		require('positioning/wifi/wifi.provider')
+		require('positioning/wifi/wifi.provider'),
+        require('positioning/acceleration/provider')
     ],
 
     injects: [
