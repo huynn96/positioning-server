@@ -10,7 +10,7 @@ module.exports = async function (context, next) {
             acceleration.y,
             acceleration.z,
             reqData["typeActivity"],
-            moment(acceleration.timestamp).toDate()
+            acceleration.timestamp
         );
     });
     await next();

@@ -61,10 +61,12 @@ class FingerprinterController {
     
     async storeMotionInfo(context) {
         console.log("request add motion infos api");
-        await this.motionRepository.addMotionInfo(context.motionInfos);
+        let result = await this.motionRepository.addMotionInfo(context.motionInfos);
         context.body = {
             type   : 'success',
-            message: 'Upload new wifi info successfully!'
+            message: 'Upload new wifi info successfully!',
+            result: result.result,
+            lastTime: parseInt(result.lastTime)
         };
     }
 }
