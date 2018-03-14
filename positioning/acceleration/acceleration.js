@@ -1,11 +1,9 @@
-const TYPE_ACTIVITY = require('./type-activity');
 
 class Acceleration {
-	constructor(x, y, z, label, createdAt) {
+	constructor(x, y, z, createdAt) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		this.label = label;
 		this.createdAt = createdAt;
 	}
 
@@ -14,7 +12,6 @@ class Acceleration {
 			x: this.x,
 			y: this.y,
 			z: this.z,
-			label: this.label,
             created_at: this.createdAt
 		}
 	}
@@ -24,7 +21,6 @@ class Acceleration {
             x: this.x,
             y: this.y,
             z: this.z,
-            label: this.label,
             createdAt: this.createdAt
         }
 	}

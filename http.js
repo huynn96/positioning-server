@@ -12,7 +12,9 @@ const EventEmitter = require('events').EventEmitter;
     let container  = await bootstrap(config, new Container(new EventEmitter()));
     let httpKernel = await container.make('http.kernel');
     let router     = await container.make('http.router');
-    
+    let socket     = await container.make('socket.io');
+    let motionSocket = await container.make('motion.socket');
+    let server = require('http').createServer(httpKernel.callback());
     httpKernel
 		.use(koaBody({
 			urlencoded: true
@@ -21,7 +23,9 @@ const EventEmitter = require('events').EventEmitter;
         .use(router.allowedMethods())
     ;
     
-    httpKernel.listen(config.http.port, () => console.log(`Server started at port: ${config.http.port}`));
+    server.listen(config.http.port, () => console.log(`Server started at port: ${config.http.port}`));
+    socket.setServer(server);
+    motionSocket.listen();
 })().catch(error => {
     console.error(error);
     process.exit(error.code);

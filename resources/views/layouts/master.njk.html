@@ -5,11 +5,16 @@
     <link rel="shortcut icon" href="{{url.asset('favicon.ico')}}">
     <title>{% block title %} {% endblock %}</title>
     <link rel="stylesheet" href="{{url.asset('bower_components/bootstrap/dist/css/bootstrap.min.css')}}">
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 </head>
 <body>
 <div class="container-fluid">
     {% block content %}
     {% endblock %}
 </div>
+<script>
+    var socket = io.connect("/");
+
+</script>
 </body>
 </html>

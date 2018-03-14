@@ -9,7 +9,7 @@ class FingerprinterController {
     }
     
     static get dependencies() {
-        return ['RoomRepository', 'WifiRepository', 'GaussianWifiService', 'Localization', 'MotionRepository'];
+        return ['RoomRepository', 'WifiRepository', 'GaussianWifiService', 'Localization', 'motion.repository'];
     }
     
     async getRooms(context) {

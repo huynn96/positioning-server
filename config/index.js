@@ -35,7 +35,8 @@ module.exports = {
         require('positioning/room/room.provider'),
 		require('positioning/wifi/wifi.provider'),
         require('positioning/acceleration/provider'),
-        require('positioning/provider')
+        require('positioning/provider'),
+        require('socket/provider')
     ],
 
     injects: [
