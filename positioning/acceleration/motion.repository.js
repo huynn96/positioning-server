@@ -5,19 +5,18 @@ class MotionRepository {
     }
     
     async addMotionInfo(motionInfos) {
-        let rows = motionInfos.map(motionInfo => motionInfo.toJson());
-        let lastTime = rows.reduce((last, row) => {
-            return last > row['createdAt'] ? last : row['createdAt']
-        }, 0);
-        console.log(lastTime);
-        console.log(rows.length);
-        if (rows.length < 80) {
+        let accelerations = motionInfos['accelerations'].map(acceleration => acceleration.toJson());
+        let directions = motionInfos['directions'].map(direction => direction.toJson());
+        if (accelerations.length < 80) {
             throw new Error('acceleration info not enough');
         }
         let options = {
             method: 'POST',
             uri: 'http://localhost:5000/cal-do',
-            body: rows,
+            body: {
+                accelerations: accelerations,
+                directions: directions
+            },
             json: true
         };
         let result = await this.request(options);
@@ -30,10 +29,7 @@ class MotionRepository {
         //     }
         // });
         // console.log('-----------------------------------------------------------');
-        return {
-            result: result,
-            lastTime: lastTime
-        }
+        return result;
         // return this.database('accelerations').insert(rows);
     }
     

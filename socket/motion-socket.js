@@ -1,4 +1,5 @@
 const Acceleration = require('positioning/acceleration/acceleration');
+const Direction = require('positioning/acceleration/direction');
 
 class MotionSocket {
     constructor(socket, motionRepos) {
@@ -12,7 +13,7 @@ class MotionSocket {
             console.log('A device has connect to socket');
             socket.on('localization', async function (data) {
                 data = JSON.parse(data);
-                let motionInfos = data['accelerations'].map((acceleration) => {
+                let accelerations = data['accelerations'].map((acceleration) => {
                     return new Acceleration(
                         acceleration.x,
                         acceleration.y,
@@ -20,12 +21,20 @@ class MotionSocket {
                         acceleration.timestamp
                     );
                 });
-                let result = await motionRepos.addMotionInfo(motionInfos);
+                let directions = data['directions'].map((direction) => {
+                    return new Direction(
+                        direction.direction,
+                        direction.pitch,
+                        direction.roll,
+                        direction.timestamp,
+                    );
+                });
+                let result = await motionRepos.addMotionInfo({accelerations: accelerations, directions: directions});
                 socket.emit('localization', {
                     type   : 'success',
                     message: 'localization successfully!',
-                    result: result.result,
-                    lastTime: parseInt(result.lastTime)
+                    offset: result[0],
+                    direction: result[1]
                 });
             });
         });
