@@ -1,15 +1,16 @@
 class FingerprinterController {
     
-    constructor(roomRepository, wifiRepository, gaussianWifiService, localization, motionRepository) {
-        this.roomRepository      = roomRepository;
-        this.wifiRepository      = wifiRepository;
-        this.gaussianWifiService = gaussianWifiService;
-        this.localization        = localization;
-        this.motionRepository    = motionRepository;
+    constructor(roomRepository, wifiRepository, gaussianWifiService, localization, motionRepository, gaussianMotionService) {
+        this.roomRepository        = roomRepository;
+        this.wifiRepository        = wifiRepository;
+        this.gaussianWifiService   = gaussianWifiService;
+        this.localization          = localization;
+        this.motionRepository      = motionRepository;
+        this.gaussianMotionService = gaussianMotionService;
     }
     
     static get dependencies() {
-        return ['RoomRepository', 'WifiRepository', 'GaussianWifiService', 'Localization', 'motion.repository'];
+        return ['RoomRepository', 'WifiRepository', 'GaussianWifiService', 'Localization', 'motion.repository', 'GaussianMotionService'];
     }
     
     async getRooms(context) {
@@ -61,12 +62,11 @@ class FingerprinterController {
     
     async storeMotionInfo(context) {
         console.log("request add motion infos api");
-        let result = await this.motionRepository.addMotionInfo(context.motionInfos);
+        let {referencePointStartId, referencePointFinishId} = await this.motionRepository.storeGaussianMotion(context.motionInfo);
+        await this.gaussianMotionService.calculateGaussian(referencePointStartId, referencePointFinishId);
         context.body = {
             type   : 'success',
-            message: 'Upload new wifi info successfully!',
-            result: result.result,
-            lastTime: parseInt(result.lastTime)
+            message: 'Upload new wifi info successfully!'
         };
     }
 }

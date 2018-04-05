@@ -21,16 +21,46 @@ class MotionRepository {
         };
         let result = await this.request(options);
         console.log(result);
-        // result.forEach(row => {
-        //     if (row === 0) {
-        //         console.log('Standing');
-        //     } else {
-        //         console.log('Walking');
-        //     }
-        // });
-        // console.log('-----------------------------------------------------------');
         return result;
-        // return this.database('accelerations').insert(rows);
+    }
+    
+    async storeGaussianMotion(motionInfo) {
+        let referencePointStart   = await this.database('reference_point_info').select()
+            .where('room_id', motionInfo.roomId)
+            .andWhere('x', motionInfo.x1)
+            .andWhere('y', motionInfo.y1)
+        ;
+        let referencePointFinish   = await this.database('reference_point_info').select()
+            .where('room_id', motionInfo.roomId)
+            .andWhere('x', motionInfo.x2)
+            .andWhere('y', motionInfo.y2)
+        ;
+        
+        let referencePointStartId = referencePointStart.length ? referencePointStart[0]['id'] : 1;
+        if (!referencePointStart.length) {
+            referencePointStartId = await this.database('reference_point_info').insert({
+                room_id: motionInfo.roomId,
+                x      : motionInfo.x1,
+                y      : motionInfo.y1
+            });
+            referencePointStartId = referencePointStartId[0];
+        }
+        let referencePointFinishId = referencePointFinish.length ? referencePointFinish[0]['id'] : 1;
+        if (!referencePointFinish.length) {
+            referencePointFinishId = await this.database('reference_point_info').insert({
+                room_id: motionInfo.roomId,
+                x      : motionInfo.x2,
+                y      : motionInfo.y2
+            });
+            referencePointFinishId = referencePointFinishId[0];
+        }
+        await this.database('motion').insert({
+            reference_point_start_id: referencePointStartId,
+            reference_point_finish_id: referencePointFinishId,
+            direction: motionInfo.direction,
+            offset: motionInfo.offset
+        });
+        return {referencePointStartId, referencePointFinishId};
     }
     
 }

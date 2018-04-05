@@ -40,5 +40,4 @@ class MotionSocket {
         });
     }
 }
-
 module.exports = MotionSocket;
