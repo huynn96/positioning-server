@@ -33,7 +33,7 @@ class FingerprinterController {
             "errorCode": 0,
             "msg"      : "success",
             "data"     : [{
-                "buildingId"     : 2,
+                "buildingId"     : 1,
                 "buildingName"   : "Nhà riêng",
                 "buildingAddress": "Việt Hưng"
             }]
@@ -52,21 +52,37 @@ class FingerprinterController {
     
     async positioning(context) {
         console.log("request localization api");
-        let p = await this.localization.gaussDucPositioning(context.wifiInfos, context.positionInfo);
-        console.log(p);
-        let max = p.reduce(function (max, current) {
+        let gaussianWifi = await this.localization.gaussReversePositioning(context.wifiInfos, context.positionInfo);
+        console.log(gaussianWifi);
+        let max = gaussianWifi.reduce(function (max, current) {
             return (max.probability < current.probability) ? max : current
         }, -1);
-        console.log(max);
+        let gaussianMotion = await this.localization.gaussianMotionPositioning(gaussianWifi, context.motionInfo, context.oldCandidate);
+        context.body = {
+            type   : 'success',
+            candidates: gaussianWifi
+        };
     }
     
     async storeMotionInfo(context) {
         console.log("request add motion infos api");
+        let gaussianWifi = await this.localization.gaussReversePositioning(context.wifiInfos, context.positionInfo);
+        console.log(gaussianWifi);
+        let max = gaussianWifi.reduce(function (max, current) {
+            return (max.probability < current.probability) ? max : current
+        }, -1);
+        console.log(max);
+        context.motionInfo.x2 = max.x;
+        context.motionInfo.y2 = max.y;
         let {referencePointStartId, referencePointFinishId} = await this.motionRepository.storeGaussianMotion(context.motionInfo);
         await this.gaussianMotionService.calculateGaussian(referencePointStartId, referencePointFinishId);
         context.body = {
             type   : 'success',
-            message: 'Upload new wifi info successfully!'
+            data: {
+                x: max.x,
+                y: max.y,
+                transactionId: context.positionInfo.transactionId
+            }
         };
     }
 }

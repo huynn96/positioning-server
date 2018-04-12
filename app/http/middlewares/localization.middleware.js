@@ -1,6 +1,7 @@
 module.exports = async function (context, next) {
 	let reqData = context.request.body;
-	context.positionInfo = {
+    console.log(reqData);
+    context.positionInfo = {
 		roomId: reqData.roomId
 	};
 	/** @namespace reqData.infos */
