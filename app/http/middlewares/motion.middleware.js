@@ -17,7 +17,8 @@ module.exports = async function (context, next) {
         x1: reqData.extendGetLocationModel.x,
         y1: reqData.extendGetLocationModel.y,
         direction: reqData.direction,
-        offset: reqData.offset
+        offset: reqData.offset,
+        stepCount: reqData.stepCount
     };
     await next();
 };

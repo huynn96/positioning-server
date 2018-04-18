@@ -75,7 +75,7 @@ class FingerprinterController {
         context.motionInfo.x2 = max.x;
         context.motionInfo.y2 = max.y;
         let {referencePointStartId, referencePointFinishId} = await this.motionRepository.storeGaussianMotion(context.motionInfo);
-        await this.gaussianMotionService.calculateGaussian(referencePointStartId, referencePointFinishId);
+        await this.gaussianMotionService.calculateGaussian(referencePointStartId, referencePointFinishId, context.motionInfo.stepCount);
         context.body = {
             type   : 'success',
             data: {

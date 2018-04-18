@@ -29,12 +29,13 @@ class MotionSocket {
                         direction.timestamp,
                     );
                 });
-                let result = await motionRepos.addMotionInfo({accelerations: accelerations, directions: directions});
+                let result = await motionRepos.addMotionInfo({accelerations: accelerations, directions: directions}, data.a, data.b);
                 socket.emit('localization', {
                     type   : 'success',
                     message: 'localization successfully!',
-                    offset: result[0],
-                    direction: result[1]
+                    offset: result[1],
+                    direction: result[2],
+                    stepCount: result[0]
                 });
             });
         });

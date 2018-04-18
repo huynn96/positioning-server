@@ -4,7 +4,7 @@ class MotionRepository {
         this.request = request;
     }
     
-    async addMotionInfo(motionInfos) {
+    async addMotionInfo(motionInfos, stepParamsA, stepParamsB) {
         let accelerations = motionInfos['accelerations'].map(acceleration => acceleration.toJson());
         let directions = motionInfos['directions'].map(direction => direction.toJson());
         if (accelerations.length < 80) {
@@ -15,7 +15,9 @@ class MotionRepository {
             uri: 'http://localhost:5000/cal-do',
             body: {
                 accelerations: accelerations,
-                directions: directions
+                directions: directions,
+                stepParamsA: stepParamsA,
+                stepParamsB: stepParamsB
             },
             json: true
         };
@@ -25,6 +27,7 @@ class MotionRepository {
     }
     
     async storeGaussianMotion(motionInfo) {
+        console.log(motionInfo);
         let referencePointStart   = await this.database('reference_point_info').select()
             .where('room_id', motionInfo.roomId)
             .andWhere('x', motionInfo.x1)
@@ -58,7 +61,8 @@ class MotionRepository {
             reference_point_start_id: referencePointStartId,
             reference_point_finish_id: referencePointFinishId,
             direction: motionInfo.direction,
-            offset: motionInfo.offset
+            offset: motionInfo.offset,
+            step_count: motionInfo.stepCount
         });
         return {referencePointStartId, referencePointFinishId};
     }
