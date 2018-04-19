@@ -17,7 +17,8 @@ exports.register = async (container) => {
     ));
 	
 	container.singleton('Localization', async () => new Localization(
-		await container.make('database')
+		await container.make('database'),
+		await container.make('motion.repository')
 	));
 };
 

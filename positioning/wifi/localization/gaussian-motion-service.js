@@ -12,10 +12,10 @@ class GaussianMotionService {
                 // reference_point_finish_id: referencePointFinishId,
                 step_count               : stepCount
             });
-        let gaussDirection    = Gauss.Vector(rows.map(row => row.direction));
+        let gaussDirection    = Gauss.Vector(rows.map(row => row.exactly_direction - row.direction));
         let meanDirection     = gaussDirection.mean();
         let varianceDirection = gaussDirection.variance();
-        let gaussOffset       = Gauss.Vector(rows.map(row => row.offset));
+        let gaussOffset       = Gauss.Vector(rows.map(row => row.exactly_offset - row.offset));
         let meanOffset        = gaussOffset.mean();
         let varianceOffset    = gaussOffset.variance();
         let gaussianUpdate    = await this.updateGaussian(referencePointStartId, referencePointFinishId, meanDirection, varianceDirection, meanOffset, varianceOffset, stepCount);
