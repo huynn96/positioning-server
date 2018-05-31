@@ -1,7 +1,7 @@
 module.exports = async function (context, next) {
-    let reqData = context.request.body;
+    let reqData          = context.request.body;
     context.positionInfo = {
-        roomId: reqData.roomId,
+        roomId       : reqData.roomId,
         transactionId: reqData.extendGetLocationModel.transactionId
     };
     /** @namespace reqData.infos */
@@ -13,11 +13,12 @@ module.exports = async function (context, next) {
         }
     });
     context.motionInfo = {
-        roomId: reqData.roomId,
-        x1: reqData.extendGetLocationModel.x,
-        y1: reqData.extendGetLocationModel.y,
+        roomId   : reqData.roomId,
+        isFirst  : reqData.extendGetLocationModel.isFirst,
+        x1       : reqData.extendGetLocationModel.x,
+        y1       : reqData.extendGetLocationModel.y,
         direction: reqData.direction,
-        offset: reqData.offset,
+        offset   : reqData.offset,
         stepCount: reqData.stepCount
     };
     await next();

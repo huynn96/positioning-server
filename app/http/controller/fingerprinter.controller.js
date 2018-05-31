@@ -17,15 +17,11 @@ class FingerprinterController {
     
     async getRooms(context) {
         console.log("request rooms api");
-        // context.body = await this.roomRepository.getRooms();
+        let rooms = await this.roomRepository.getRooms();
         context.body = {
             "errorCode": 0,
             "msg"      : "success",
-            "data"     : [{
-                "roomId"    : 1,
-                "roomName"  : "Phòng trọ",
-                "buildingId": 1
-            }]
+            "data"     : rooms
         }
     }
     
@@ -36,9 +32,14 @@ class FingerprinterController {
             "msg"      : "success",
             "data"     : [{
                 "buildingId"     : 1,
-                "buildingName"   : "Nhà riêng",
+                "buildingName"   : "UET",
                 "buildingAddress": "Việt Hưng"
-            }]
+            },
+                {
+                    "buildingId"     : 2,
+                    "buildingName"   : "Nhà",
+                    "buildingAddress": "Việt Hưng"
+                }]
         };
     }
     
@@ -54,10 +55,13 @@ class FingerprinterController {
     
     async positioning(context) {
         console.log("request localization api");
+        console.log(context.positionInfo.transactionId);
         let gaussianWifi = await this.localization.gaussReversePositioning(context.wifiInfos, context.positionInfo);
         gaussianWifi.forEach(r1 => r1.probability = 1 - r1.probability);
         gaussianWifi = gaussianWifi.sort((r1, r2) => r2.probability - r1.probability);
         let candidates = lodash.take(gaussianWifi, 4);
+        console.log(context.oldCandidates);
+        console.log(candidates);
         if (context.oldCandidates.length) {
             let gaussianMotion = await this.localization.gaussianMotionPositioning(candidates, context.motionInfo, context.oldCandidates);
             candidates         = lodash.take(gaussianMotion.sort((r1, r2) => r2.probability - r1.probability), 4);
@@ -79,19 +83,23 @@ class FingerprinterController {
     async storeMotionInfo(context) {
         console.log("request add motion infos api");
         let gaussianWifi                                    = await this.localization.gaussReversePositioning(context.wifiInfos, context.positionInfo);
-        let max                                             = gaussianWifi.reduce(function (max, current) {
-            return (max.probability < current.probability) ? max : current
-        }, -1);
-        context.motionInfo.x2                               = max.x;
-        context.motionInfo.y2                               = max.y;
-        let {referencePointStartId, referencePointFinishId} = await this.motionRepository.storeGaussianMotion(context.motionInfo);
-        await this.gaussianMotionService.calculateGaussian(referencePointStartId, referencePointFinishId, context.motionInfo.stepCount);
+        console.log(gaussianWifi);
+        let max = gaussianWifi.sort((r1, r2) => r1.probability - r2.probability);
+        max = max[0];
+        context.motionInfo.x1                               = 1;
+        context.motionInfo.y1                               = 1;
+        context.motionInfo.x2                               = 2;
+        context.motionInfo.y2                               = 3;
+        if (!context.motionInfo.isFirst) {
+            let {referencePointStartId, referencePointFinishId} = await this.motionRepository.storeGaussianMotion(context.motionInfo);
+            await this.gaussianMotionService.calculateGaussian(referencePointStartId, referencePointFinishId, context.motionInfo.stepCount);
+        }
         context.body = {
             type: 'success',
             data: {
                 x            : max.x,
                 y            : max.y,
-                transactionId: context.positionInfo.transactionId
+                transactionId: context.positionInfo.transactionId + 1
             }
         };
     }

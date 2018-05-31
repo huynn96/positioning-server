@@ -27,7 +27,6 @@ class MotionRepository {
     }
     
     async storeGaussianMotion(motionInfo) {
-        console.log(motionInfo);
         let referencePointStart  = await this.database('reference_point_info').select()
             .where('room_id', motionInfo.roomId)
             .andWhere('x', motionInfo.x1)
@@ -74,7 +73,7 @@ class MotionRepository {
     calculateExactly(directionRoom, referencePointStart, referencePointFinish) {
         let oExactly = Math.sqrt((referencePointStart.x - referencePointFinish.x) * (referencePointStart.x - referencePointFinish.x) + (referencePointStart.y - referencePointFinish.y) * ((referencePointStart.y - referencePointFinish.y)));
         let dExactly = Math.atan2(referencePointFinish.x - referencePointStart.x, referencePointFinish.y - referencePointStart.y) * 180 / Math.PI;
-        dExactly = dExactly + directionRoom;
+        dExactly = dExactly + parseInt(directionRoom);
         dExactly = dExactly < 0 ? dExactly + 360 : dExactly;
         dExactly = dExactly > 360 ? dExactly % 360 : dExactly;
         return {oExactly, dExactly};

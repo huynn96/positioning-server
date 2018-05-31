@@ -11,7 +11,7 @@ class RoomRepository {
 	 */
 	async getRooms() {
 		let rooms = this.database('room').select();
-		return rooms.map(room => new Room(room['room_name'], room['address']));
+		return rooms.map(room => new Room(room['room_name'], room['address']).setId(room['id']).toJson());
 	}
 	
 	async postWifiInfo() {

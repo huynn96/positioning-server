@@ -12,6 +12,14 @@ class Room {
 	getId() {
 		return this.id;
 	}
+	
+	toJson() {
+		return {
+			roomId: this.id,
+			roomName: this.roomName,
+			buildingId: 1
+		}
+	}
 }
 
 module.exports = Room;
